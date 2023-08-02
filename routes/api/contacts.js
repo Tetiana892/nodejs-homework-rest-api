@@ -1,8 +1,8 @@
 const express = require("express");
 const Joi = require("joi");
-const contacts = require("./../../routes/api/contacts");
+const contacts = require("../../models/contacts");
 
-const HttpError = require("./../../helpers");
+const { HttpError } = require("../../helpers");
 
 const router = express.Router();
 
@@ -39,8 +39,9 @@ router.get("/:id", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const { error } = addSchema.validate(req.body);
+    console.log(error);
     if (error) {
-      throw HttpError(400, error.message);
+      throw HttpError(400, `missing required ${error.message} field`);
     }
     const result = await contacts.addContact(req.body);
     res.status(201).json(result);
@@ -49,7 +50,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/:contactId", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await contacts.removeContact(id);
