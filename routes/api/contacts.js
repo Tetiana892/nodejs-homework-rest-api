@@ -28,7 +28,7 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const result = await contacts.getById(id);
     if (!result) {
-      throw HttpError(404, "Not Found");
+      throw HttpError(404, "Not found");
     }
     res.json(result);
   } catch (error) {
@@ -39,9 +39,12 @@ router.get("/:id", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const { error } = addSchema.validate(req.body);
-    console.log(error);
+    const inputString = error.message;
+    const words = inputString.split(" ");
+    const firstWord = words[0].replace(/"/g, "");
+
     if (error) {
-      throw HttpError(400, `missing required ${error.message} field`);
+      throw HttpError(400, `missing required ${firstWord} field`);
     }
     const result = await contacts.addContact(req.body);
     res.status(201).json(result);
@@ -55,7 +58,7 @@ router.delete("/:id", async (req, res, next) => {
     const { id } = req.params;
     const result = await contacts.removeContact(id);
     if (!result) {
-      throw HttpError(404, "Not Found");
+      throw HttpError(404, "Not found");
     }
     res.json({
       message: "Contact Deleted",
@@ -68,15 +71,19 @@ router.delete("/:id", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
   try {
     const { error } = addSchema.validate(req.body);
+    // const inputString = error.message;
+    // const words = inputString.split(" ");
+    // const firstWord = words[0].replace(/"/g, "");
+
     if (error) {
-      throw HttpError(400, error.message);
+      throw HttpError(400, `missing ${error.message} fields`);
     }
     const { id } = req.params;
     const result = await contacts.updateContact(id, req.body);
     if (!result) {
-      throw HttpError(404, "Not Found");
+      throw HttpError(404, "Not found");
     }
-    req.json(result);
+    res.json(result);
   } catch (error) {
     next(error);
   }
