@@ -15,7 +15,7 @@ router.delete("/:id", ctrl.removeContact);
 router.put(
   "/:id",
   emptyBody,
-  validateBody(schemas.addPutSchema),
+  validateBody(schemas.addSchema),
   ctrl.updateContact
 );
 
