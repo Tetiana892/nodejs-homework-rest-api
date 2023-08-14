@@ -6,10 +6,6 @@ const emailRegexp = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
 
 const userSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     password: {
       type: String,
       minlength: 6,
@@ -37,9 +33,6 @@ const userSchema = new Schema(
 userSchema.post("save", handleMongooseError);
 
 const registerSchema = Joi.object({
-  name: Joi.string().required().messages({
-    "any.required": `Missing required name field`,
-  }),
   email: Joi.string().required(emailRegexp).messages({
     "any.required": `Missing required email field`,
   }),
