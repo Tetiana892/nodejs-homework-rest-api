@@ -10,5 +10,6 @@ router.post(
   validateBody(schemas.registerSchema),
   controller.register
 );
+router.post("/login", validateBody(schemas.loginSchema), controller.login);
 
 module.exports = router;
