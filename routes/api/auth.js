@@ -12,7 +12,7 @@ router.post(
 );
 router.post("/login", validateBody(schemas.loginSchema), controller.login);
 
-router.get("/current", authenticate, controller.getCurrent);
+router.get("/current", authenticate, controller.current);
 
 router.post("/logout", authenticate, controller.logout);
 
