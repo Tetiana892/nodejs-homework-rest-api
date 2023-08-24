@@ -3,10 +3,12 @@ const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const path = require("path");
 const fs = require("fs/promises");
+const Jimp = require("jimp");
 
 const { User } = require("../models/user");
 
 const { HttpError, ctrlWrapper } = require("../helpers");
+const { Types } = require("mongoose");
 
 const { SECRET_KEY } = process.env;
 
@@ -82,9 +84,28 @@ const updateAvatar = async (req, res) => {
   const avatarURL = path.join("avatars", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
 
+  const image = await Jimp.read(resultUpload);
+  await image.cover(250, 250).write(resultUpload);
+
   res.status(200).json({
     avatarURL,
   });
+};
+
+const updateSubscription = async (req, res) => {
+  const { userId } = req.params;
+  const { subscription } = req.body;
+  if (!Types.ObjectId.isValid(userId)) {
+    throw new HttpError(404, "User not found");
+  }
+  const user = await User.findByIdAndUpdate(userId, req.body, {
+    new: true,
+  });
+
+  if (!user) {
+    throw new HttpError(404, "User not found");
+  }
+  res.json({ user: { subscription } });
 };
 
 module.exports = {
@@ -93,4 +114,5 @@ module.exports = {
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
   updateAvatar: ctrlWrapper(updateAvatar),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };
