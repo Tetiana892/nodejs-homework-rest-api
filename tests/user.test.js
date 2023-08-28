@@ -30,7 +30,7 @@ describe("test login controller", () => {
       email: "Tatiana@mail.com",
       password: "123456",
     });
-    expect(response.body.data.token).toBeDefined();
+    expect(response.body.token).toBeDefined();
   });
 
   test("response should return a user object with two fields email and subscription, which have the data type String", async () => {
