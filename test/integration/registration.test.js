@@ -10,17 +10,18 @@ mongoose.set("strictQuery", true);
 describe("test login controller", () => {
   beforeAll(async () => {
     await mongoose
-      .connect(DB_HOST)
+      .connect(DB_HOST, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
       .then(() => console.log("DB Connected"))
       .catch((err) => {
         console.log(err);
       });
   });
 
-  test("the response must have a status code 200", async () => {
-    const response = await (
-      await request(app).post("/users/login")
-    ).send({
+  test("response must have a status code 200", async () => {
+    const response = await request(app).post("/users/login").send({
       email: "Tatiana@mail.com",
       password: "123456",
     });
@@ -28,9 +29,7 @@ describe("test login controller", () => {
   });
 
   test("response should return a token", async () => {
-    const response = await (
-      await request(app).post("/users/login")
-    ).send({
+    const response = await request(app).post("/users/login").send({
       email: "Tatiana@mail.com",
       password: "123456",
     });
@@ -38,13 +37,11 @@ describe("test login controller", () => {
   });
 
   test("response should return a user object with two fields email and subscription, which have the data type String", async () => {
-    const response = await (
-      await request(app).post("/users/login")
-    ).send({
+    const response = await request(app).post("/users/login").send({
       email: "Tatiana@mail.com",
       password: "123456",
     });
-    const { user } = response.body.data;
+    const { user } = response.body;
     expect(typeof user).toBe("object");
     expect(user).toHaveProperty("email");
     expect(user).toHaveProperty("subscription");
