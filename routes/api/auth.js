@@ -15,6 +15,14 @@ router.post(
   validateBody(schemas.registerSchema),
   controller.register
 );
+router.get("/verify/:verificationToken", controller.verifyEmail);
+
+router.post(
+  "/verify",
+  validateBody(schemas.emailShema),
+  controller.resendVerifyEmail
+);
+
 router.post("/login", validateBody(schemas.loginSchema), controller.login);
 
 router.get("/current", authenticate, controller.current);
